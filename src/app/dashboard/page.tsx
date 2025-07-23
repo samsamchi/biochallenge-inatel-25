@@ -1,8 +1,8 @@
 "use client";
 import { useSession, signOut } from "next-auth/react"; // Adicionei signOut aqui
 import { redirect } from "next/navigation";
-import MedicineList from "../components/MedicineList";
-import AddMedicineForm from "../components/AddMedicineForm";
+import MedicineList from "../../components/MedicineList";
+import AddMedicineForm from "../../components/AddMedicineForm";
 
 export default function DashboardPage() {
   const { data: session } = useSession({
