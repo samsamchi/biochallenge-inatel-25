@@ -1,9 +1,13 @@
 "use client";
-import { signIn } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
+import { hash } from "bcryptjs";
+import { PrismaClient } from "@prisma/client";
 
-export default function LoginPage() {
+const prisma = new PrismaClient();
+
+export default function CadastroPage() {
+  const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
@@ -11,25 +15,42 @@ export default function LoginPage() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    const result = await signIn("credentials", {
-      email,
-      password,
-      redirect: false,
-    });
+    try {
+      const hashedPassword = await hash(password, 12);
+      
+      await prisma.user.create({
+        data: {
+          name,
+          email,
+          password: hashedPassword,
+        },
+      });
 
-    if (result?.error) {
-      setError(result.error);
-    } else {
-      router.push("/dashboard");
+      router.push("/login");
+    } catch (err) {
+      setError("Erro ao criar conta. Tente novamente.");
     }
   };
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-50">
       <div className="bg-white p-8 rounded shadow-md w-96">
-        <h1 className="text-2xl font-bold mb-6 text-center">Login</h1>
+        <h1 className="text-2xl font-bold mb-6 text-center">Cadastro</h1>
         {error && <p className="text-red-500 mb-4">{error}</p>}
         <form onSubmit={handleSubmit}>
+          <div className="mb-4">
+            <label className="block text-gray-700 mb-2" htmlFor="name">
+              Nome
+            </label>
+            <input
+              type="text"
+              id="name"
+              className="w-full px-3 py-2 border rounded"
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+              required
+            />
+          </div>
           <div className="mb-4">
             <label className="block text-gray-700 mb-2" htmlFor="email">
               Email
@@ -60,16 +81,12 @@ export default function LoginPage() {
             type="submit"
             className="w-full bg-blue-500 text-white py-2 rounded hover:bg-blue-600"
           >
-            Entrar
+            Cadastrar
           </button>
         </form>
         <div className="mt-4 text-center">
-          <a href="/cadastro" className="text-blue-500 hover:underline">
-            Criar conta
-          </a>
-          <span className="mx-2">|</span>
-          <a href="/recuperar-senha" className="text-blue-500 hover:underline">
-            Recuperar senha
+          <a href="/login" className="text-blue-500 hover:underline">
+            Já tem conta? Faça login
           </a>
         </div>
       </div>
