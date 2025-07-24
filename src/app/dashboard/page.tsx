@@ -1,6 +1,7 @@
 "use client";
-import { useSession, signOut } from "next-auth/react"; // Adicionei signOut aqui
+import { useSession, signOut } from "next-auth/react";
 import { redirect } from "next/navigation";
+import { useState } from "react";
 import MedicineList from "../../components/MedicineList";
 import AddMedicineForm from "../../components/AddMedicineForm";
 
@@ -11,6 +12,7 @@ export default function DashboardPage() {
       redirect("/login");
     },
   });
+  const [refreshList, setRefreshList] = useState(false);
 
   return (
     <div className="min-h-screen bg-gray-100">
@@ -30,8 +32,8 @@ export default function DashboardPage() {
       </header>
       <main className="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8">
         <div className="px-4 py-6 sm:px-0">
-          <AddMedicineForm />
-          <MedicineList />
+          <AddMedicineForm onMedicineAdded={() => setRefreshList(prev => !prev)} />
+          <MedicineList refreshTrigger={refreshList} />
         </div>
       </main>
     </div>

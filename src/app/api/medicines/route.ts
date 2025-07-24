@@ -5,7 +5,6 @@ const prisma = new PrismaClient();
 
 export async function POST(req: NextRequest) {
   try {
-    // Verifica o header de autenticação simplificado
     const userEmail = req.headers.get("X-User-Email");
     
     if (!userEmail) {
@@ -17,7 +16,6 @@ export async function POST(req: NextRequest) {
 
     const { name, dosage, time, description } = await req.json();
 
-    // Encontra o usuário pelo email
     const user = await prisma.user.findUnique({
       where: { email: userEmail },
     });
@@ -29,7 +27,6 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    // Cria o medicamento associado ao usuário
     const medicine = await prisma.medicine.create({
       data: {
         name,
@@ -45,6 +42,44 @@ export async function POST(req: NextRequest) {
     console.error("Erro ao cadastrar:", error);
     return NextResponse.json(
       { message: "Erro ao cadastrar medicamento" },
+      { status: 500 }
+    );
+  }
+}
+
+// Adicione este novo método para listagem
+export async function GET(req: NextRequest) {
+  try {
+    const userEmail = req.headers.get("X-User-Email");
+    
+    if (!userEmail) {
+      return NextResponse.json(
+        { message: "Autenticação necessária" },
+        { status: 401 }
+      );
+    }
+
+    const user = await prisma.user.findUnique({
+      where: { email: userEmail },
+    });
+
+    if (!user) {
+      return NextResponse.json(
+        { message: "Usuário não encontrado" },
+        { status: 404 }
+      );
+    }
+
+    const medicines = await prisma.medicine.findMany({
+      where: { userId: user.id },
+      orderBy: { time: "asc" }, // Ordena por horário mais próximo
+    });
+
+    return NextResponse.json(medicines);
+  } catch (error) {
+    console.error("Erro ao buscar medicamentos:", error);
+    return NextResponse.json(
+      { message: "Erro ao buscar medicamentos" },
       { status: 500 }
     );
   }

@@ -2,7 +2,11 @@
 import { useState } from "react";
 import { useSession } from "next-auth/react";
 
-export default function AddMedicineForm() {
+interface AddMedicineFormProps {
+  onMedicineAdded?: () => void;
+}
+
+export default function AddMedicineForm({ onMedicineAdded }: AddMedicineFormProps) {
   const { data: session } = useSession();
   const [name, setName] = useState("");
   const [dosage, setDosage] = useState("");
@@ -19,7 +23,6 @@ export default function AddMedicineForm() {
     setSuccess("");
 
     try {
-      // Verifica se o usuário está logado
       if (!session?.user?.email) {
         throw new Error("Você precisa estar logado para cadastrar medicamentos");
       }
@@ -28,7 +31,6 @@ export default function AddMedicineForm() {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          // Envia o email do usuário como forma simplificada de autenticação
           "X-User-Email": session.user.email
         },
         body: JSON.stringify({ name, dosage, time, description }),
@@ -43,13 +45,14 @@ export default function AddMedicineForm() {
       setDosage("");
       setTime("");
       setDescription("");
+
+      if (onMedicineAdded) onMedicineAdded();
     } catch (err) {
       setError(err instanceof Error ? err.message : "Erro ao cadastrar medicamento");
     } finally {
       setIsSubmitting(false);
     }
   };
-
 
   return (
     <div className="bg-white p-6 rounded-lg shadow mb-6">
@@ -87,7 +90,7 @@ export default function AddMedicineForm() {
         </div>
         <div className="mb-4">
           <label className="block text-gray-700 mb-2" htmlFor="time">
-            Horário
+            Data e Horário
           </label>
           <input
             type="datetime-local"
