@@ -14,23 +14,28 @@ export default function CadastroPage() {
   const router = useRouter();
 
   const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    try {
-      const hashedPassword = await hash(password, 12);
-      
-      await prisma.user.create({
-        data: {
-          name,
-          email,
-          password: hashedPassword,
-        },
-      });
+  e.preventDefault();
+  try {
+    const res = await fetch("/api/cadastro", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ name, email, password }),
+    });
 
-      router.push("/login");
-    } catch (err) {
-      setError("Erro ao criar conta. Tente novamente.");
+    const data = await res.json();
+
+    if (!res.ok) {
+      setError(data.error || "Erro ao criar conta.");
+      return;
     }
-  };
+
+    router.push("/login");
+  } catch (err) {
+    console.error(err);
+    setError("Erro ao criar conta. Tente novamente.");
+  }
+};
+
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-50">
