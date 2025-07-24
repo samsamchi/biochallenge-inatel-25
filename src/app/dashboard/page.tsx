@@ -18,12 +18,12 @@ export default function DashboardPage() {
     <div className="min-h-screen bg-gray-100">
       <header className="bg-white shadow">
         <div className="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8 flex justify-between items-center">
-          <h1 className="text-3xl font-bold text-gray-900">Meus Medicamentos</h1>
+          <h2 className="text-2xl font-semibold text-gray-900">Olá, {session?.user?.name}. Você está no Controle de Medicamentos.</h2>
           <div className="flex items-center space-x-4">
-            <span className="text-gray-700">Olá, {session?.user?.name}</span>
             <button
+            type="submit"
               onClick={() => signOut()}
-              className="text-blue-500 hover:underline"
+              className="bg-blue-500 text-white py-2 rounded hover:bg-blue-600 disabled:bg-blue-300 cursor-pointer px-4, px-6"
             >
               Sair
             </button>

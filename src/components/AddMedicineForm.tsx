@@ -56,7 +56,7 @@ export default function AddMedicineForm({ onMedicineAdded }: AddMedicineFormProp
 
   return (
     <div className="bg-white p-6 rounded-lg shadow mb-6">
-      <h2 className="text-xl font-semibold mb-4">Adicionar Medicamento</h2>
+      <h2 className="text-xl font-semibold mb-4 text-gray-700">Adicionar Medicamento</h2>
       {error && <p className="text-red-500 mb-4">{error}</p>}
       {success && <p className="text-green-500 mb-4">{success}</p>}
       <form onSubmit={handleSubmit}>
@@ -68,7 +68,7 @@ export default function AddMedicineForm({ onMedicineAdded }: AddMedicineFormProp
             <input
               type="text"
               id="name"
-              className="w-full px-3 py-2 border rounded"
+              className="w-full px-3 py-2 border rounded text-gray-700"
               value={name}
               onChange={(e) => setName(e.target.value)}
               required
@@ -81,7 +81,7 @@ export default function AddMedicineForm({ onMedicineAdded }: AddMedicineFormProp
             <input
               type="text"
               id="dosage"
-              className="w-full px-3 py-2 border rounded"
+              className="w-full px-3 py-2 border rounded text-gray-700"
               value={dosage}
               onChange={(e) => setDosage(e.target.value)}
               required
@@ -95,7 +95,7 @@ export default function AddMedicineForm({ onMedicineAdded }: AddMedicineFormProp
           <input
             type="datetime-local"
             id="time"
-            className="w-full px-3 py-2 border rounded"
+            className="w-full px-3 py-2 border rounded text-gray-700"
             value={time}
             onChange={(e) => setTime(e.target.value)}
             required
@@ -107,7 +107,7 @@ export default function AddMedicineForm({ onMedicineAdded }: AddMedicineFormProp
           </label>
           <textarea
             id="description"
-            className="w-full px-3 py-2 border rounded"
+            className="w-full px-3 py-2 border rounded text-gray-700"
             rows={3}
             value={description}
             onChange={(e) => setDescription(e.target.value)}
@@ -115,7 +115,7 @@ export default function AddMedicineForm({ onMedicineAdded }: AddMedicineFormProp
         </div>
         <button
           type="submit"
-          className="bg-blue-500 text-white py-2 px-4 rounded hover:bg-blue-600 disabled:bg-blue-300"
+          className="bg-blue-500 text-white py-2 px-4 rounded hover:bg-blue-600 disabled:bg-blue-300 cursor-pointer"
           disabled={isSubmitting}
         >
           {isSubmitting ? "Cadastrando..." : "Cadastrar Medicamento"}

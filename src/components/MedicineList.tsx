@@ -57,8 +57,8 @@ export default function MedicineList({ refreshTrigger }: MedicineListProps) {
 
   return (
     <div className="bg-white p-6 rounded-lg shadow">
-      <h2 className="text-xl font-semibold mb-4">Meus Medicamentos</h2>
-      
+      <h2 className="text-xl font-semibold mb-4 text-gray-700">Medicamentos Cadastrados</h2>
+
       {medicines.length === 0 ? (
         <p className="text-gray-500">Nenhum medicamento cadastrado.</p>
       ) : (
@@ -67,11 +67,11 @@ export default function MedicineList({ refreshTrigger }: MedicineListProps) {
             <div key={medicine.id} className="border p-4 rounded-lg">
               <div className="flex justify-between items-start">
                 <div>
-                  <h3 className="font-medium text-lg">{medicine.name}</h3>
-                  <p className="text-gray-600">Dosagem: {medicine.dosage}</p>
+                  <h3 className="font-medium text-lg text-gray-700">{medicine.name}</h3>
+                  <p className="text-gray-700">Dosagem: {medicine.dosage}</p>
                 </div>
                 <div className="text-right">
-                  <p className="text-sm font-medium">
+                  <p className="text-sm font-medium text-gray-700">
                     {format(medicine.time, "dd/MM/yyyy HH:mm")}
                   </p>
                 </div>
