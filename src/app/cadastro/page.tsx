@@ -40,7 +40,7 @@ export default function CadastroPage() {
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-50">
       <div className="bg-white p-8 rounded shadow-md w-96">
-        <h1 className="text-2xl font-bold mb-6 text-center">Cadastro</h1>
+        <h1 className="text-2xl font-bold mb-6 text-center text-gray-600">Cadastro</h1>
         {error && <p className="text-red-500 mb-4">{error}</p>}
         <form onSubmit={handleSubmit}>
           <div className="mb-4">
@@ -50,7 +50,7 @@ export default function CadastroPage() {
             <input
               type="text"
               id="name"
-              className="w-full px-3 py-2 border rounded"
+              className="w-full px-3 py-2 border rounded text-gray-700"
               value={name}
               onChange={(e) => setName(e.target.value)}
               required
@@ -63,7 +63,7 @@ export default function CadastroPage() {
             <input
               type="email"
               id="email"
-              className="w-full px-3 py-2 border rounded"
+              className="w-full px-3 py-2 border rounded text-gray-700"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               required
@@ -76,7 +76,7 @@ export default function CadastroPage() {
             <input
               type="password"
               id="password"
-              className="w-full px-3 py-2 border rounded"
+              className="w-full px-3 py-2 border rounded text-gray-700"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               required
@@ -84,7 +84,7 @@ export default function CadastroPage() {
           </div>
           <button
             type="submit"
-            className="w-full bg-blue-500 text-white py-2 rounded hover:bg-blue-600"
+            className="w-full bg-blue-500 text-white py-2 rounded hover:bg-blue-600 cursor-pointer"
           >
             Cadastrar
           </button>
