@@ -1,9 +1,6 @@
 "use client";
 import { useState } from "react";
-import { PrismaClient } from "@prisma/client";
 import { useSession } from "next-auth/react";
-
-const prisma = new PrismaClient();
 
 export default function AddMedicineForm() {
   const { data: session } = useSession();
@@ -22,15 +19,24 @@ export default function AddMedicineForm() {
     setSuccess("");
 
     try {
-      await prisma.medicine.create({
-        data: {
-          name,
-          dosage,
-          time: new Date(time),
-          description,
-          userId: session?.user?.id as string,
+      // Verifica se o usuário está logado
+      if (!session?.user?.email) {
+        throw new Error("Você precisa estar logado para cadastrar medicamentos");
+      }
+
+      const response = await fetch("/api/medicines", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          // Envia o email do usuário como forma simplificada de autenticação
+          "X-User-Email": session.user.email
         },
+        body: JSON.stringify({ name, dosage, time, description }),
       });
+
+      if (!response.ok) {
+        throw new Error("Falha ao cadastrar medicamento");
+      }
 
       setSuccess("Medicamento cadastrado com sucesso!");
       setName("");
@@ -38,11 +44,12 @@ export default function AddMedicineForm() {
       setTime("");
       setDescription("");
     } catch (err) {
-      setError("Erro ao cadastrar medicamento. Tente novamente.");
+      setError(err instanceof Error ? err.message : "Erro ao cadastrar medicamento");
     } finally {
       setIsSubmitting(false);
     }
   };
+
 
   return (
     <div className="bg-white p-6 rounded-lg shadow mb-6">

@@ -1,62 +1,50 @@
-// src/app/api/medicines/route.ts
-import { NextResponse } from "next/server";
-import type { NextRequest } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 import { PrismaClient } from "@prisma/client";
 
 const prisma = new PrismaClient();
 
-export async function GET(request: NextRequest) {
-  const { searchParams } = new URL(request.url);
-  const userId = searchParams.get("userId");
-
-  if (!userId) {
-    return NextResponse.json(
-      { error: "userId é obrigatório" },
-      { status: 400 }
-    );
-  }
-
+export async function POST(req: NextRequest) {
   try {
-    const medicines = await prisma.medicine.findMany({
-      where: { userId },
-      orderBy: { time: "asc" },
-    });
+    // Verifica o header de autenticação simplificado
+    const userEmail = req.headers.get("X-User-Email");
     
-    return NextResponse.json(medicines);
-  } catch (error) {
-    return NextResponse.json(
-      { error: "Erro ao buscar medicamentos" },
-      { status: 500 }
-    );
-  }
-}
-
-export async function POST(request: NextRequest) {
-  try {
-    const body = await request.json();
-
-    if (!body.userId) {
+    if (!userEmail) {
       return NextResponse.json(
-        { error: "userId é obrigatório" },
-        { status: 400 }
+        { message: "Autenticação necessária" },
+        { status: 401 }
       );
     }
 
+    const { name, dosage, time, description } = await req.json();
+
+    // Encontra o usuário pelo email
+    const user = await prisma.user.findUnique({
+      where: { email: userEmail },
+    });
+
+    if (!user) {
+      return NextResponse.json(
+        { message: "Usuário não encontrado" },
+        { status: 404 }
+      );
+    }
+
+    // Cria o medicamento associado ao usuário
     const medicine = await prisma.medicine.create({
       data: {
-        name: body.name,
-        dosage: body.dosage,
-        time: new Date(body.time),
-        description: body.description,
-        userId: body.userId
-      }
+        name,
+        dosage,
+        time: new Date(time),
+        description,
+        userId: user.id,
+      },
     });
 
     return NextResponse.json(medicine, { status: 201 });
   } catch (error) {
-    console.error("Erro ao criar medicamento:", error);
+    console.error("Erro ao cadastrar:", error);
     return NextResponse.json(
-      { error: "Erro ao criar medicamento" },
+      { message: "Erro ao cadastrar medicamento" },
       { status: 500 }
     );
   }
