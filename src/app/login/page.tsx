@@ -26,15 +26,7 @@ export default function LoginPage() {
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-white">
-       <div className="flex flex-col items-center mb-18 my-10 mr-25">
-        <h1 className="text-2xl font-bold text-center text-gray-600 mb-8">
-          Sistema de Gestão de Medicamentos
-        </h1>
-        <img 
-          src="/medico.png" 
-          alt="Médico" 
-          className="w-70 h-auto" 
-        />
+      <div className="flex flex-col items-center mb-18 my-10 mr-25">
       </div>
       <div className="bg-white p-8 rounded shadow-md w-96">
         <h2 className="text-2xl font-bold mb-6 text-center text-gray-600">Login</h2>
