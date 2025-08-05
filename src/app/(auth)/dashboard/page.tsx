@@ -7,7 +7,7 @@ export default function DashboardPage() {
   const [refreshList, setRefreshList] = useState(false);
 
   return (
-    <main>
+    <main className="flex flex-col items-center justify-center gap-8">
       <AddMedicineForm
         onMedicineAdded={() => setRefreshList((prev) => !prev)}
       />

@@ -86,7 +86,7 @@ export default function MedicineList({ refreshTrigger }: MedicineListProps) {
   };
 
   return (
-    <Card>
+    <Card className="w-full">
       <CardHeader className="px-4 pb-0">
         <h2 className="font-semibold mb-4 text-gray-700">
           Medicamentos Cadastrados
