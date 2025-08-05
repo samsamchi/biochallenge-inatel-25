@@ -1,102 +1,153 @@
 "use client";
+import { Button } from "@heroui/button";
+import { Card, CardBody, CardFooter, CardHeader } from "@heroui/card";
+import { Input } from "@heroui/input";
+import { addToast } from "@heroui/toast";
+import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
-import { hash } from "bcryptjs";
-import { PrismaClient } from "@prisma/client";
+import { SubmitHandler, useForm } from "react-hook-form";
 
-const prisma = new PrismaClient();
+interface CadastroFormData {
+  name: string;
+  email: string;
+  password: string;
+  confirmPassword: string;
+}
 
 export default function CadastroPage() {
-  const [name, setName] = useState("");
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [error, setError] = useState("");
-  const [success, setSuccess] = useState("");
   const router = useRouter();
+  const {
+    register,
+    handleSubmit,
+    watch,
+    formState: { errors, isSubmitting },
+  } = useForm<CadastroFormData>();
 
-  const handleSubmit = async (e: React.FormEvent) => {
-  e.preventDefault();
-  try {
-    const res = await fetch("/api/cadastro", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ name, email, password }),
-    });
+  const password = watch("password");
 
-    const data = await res.json();
+  const onSubmit: SubmitHandler<CadastroFormData> = async (data) => {
+    try {
+      const res = await fetch("/api/cadastro", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          name: data.name,
+          email: data.email,
+          password: data.password,
+        }),
+      });
 
-    if (!res.ok) {
-      setError(data.error || "Erro ao criar conta.");
-      return;
+      const responseData = await res.json();
+
+      if (!res.ok) {
+        addToast({
+          title: "Erro",
+          description: responseData.error || "Erro ao criar conta.",
+          color: "danger",
+        });
+        return;
+      }
+      addToast({
+        title: "Sucesso",
+        description: "Conta criada com sucesso!",
+        color: "success",
+      });
+      setTimeout(() => router.push("/login"), 1000);
+    } catch (err) {
+      console.error(err);
+      addToast({
+        title: "Erro",
+        description: "Erro ao criar conta. Tente novamente.",
+        color: "danger",
+      });
     }
-    setSuccess("Conta criada com sucesso!");
-    setTimeout(() => router.push("/login"), 2000);
-  } catch (err) {
-    console.error(err);
-    setError("Erro ao criar conta. Tente novamente.");
-  }
-};
-
+  };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-50">
-      <div className="bg-white p-8 rounded shadow-md w-96">
-        <h1 className="text-2xl font-bold mb-6 text-center text-gray-600">Cadastro</h1>
-        {success && <p className="text-green-500 mb-4">{success}</p>}
-        {error && <p className="text-red-500 mb-4">{error}</p>}
-        <form onSubmit={handleSubmit}>
-          <div className="mb-4">
-            <label className="block text-gray-700 mb-2" htmlFor="name">
-              Nome
-            </label>
-            <input
-              type="text"
-              id="name"
-              className="w-full px-3 py-2 border rounded text-gray-700"
-              value={name}
-              onChange={(e) => setName(e.target.value)}
-              required
-            />
-          </div>
-          <div className="mb-4">
-            <label className="block text-gray-700 mb-2" htmlFor="email">
-              Email
-            </label>
-            <input
-              type="email"
-              id="email"
-              className="w-full px-3 py-2 border rounded text-gray-700"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              required
-            />
-          </div>
-          <div className="mb-6">
-            <label className="block text-gray-700 mb-2" htmlFor="password">
-              Senha
-            </label>
-            <input
-              type="password"
-              id="password"
-              className="w-full px-3 py-2 border rounded text-gray-700"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              required
-            />
-          </div>
-          <button
-            type="submit"
-            className="w-full bg-blue-500 text-white py-2 rounded hover:bg-blue-600 cursor-pointer"
+    <div className="min-h-screen flex items-center justify-center login-bg">
+      <Card className="w-[360px] gap-2">
+        <CardHeader className="text-gray-700 pt-6 justify-center">
+          <h1 className="text-xl font-bold text-center">Cadastro</h1>
+        </CardHeader>
+        <CardBody className="px-6">
+          <form
+            onSubmit={handleSubmit(onSubmit)}
+            className="flex flex-col gap-8"
           >
-            Cadastrar
-          </button>
-        </form>
-        <div className="mt-4 text-center">
-          <a href="/login" className="text-blue-500 hover:underline">
+            <div className="flex flex-col gap-4 w-full">
+              <Input
+                label="Nome"
+                type="text"
+                variant="bordered"
+                {...register("name", {
+                  required: "Nome é obrigatório",
+                  minLength: {
+                    value: 2,
+                    message: "Nome deve ter pelo menos 2 caracteres",
+                  },
+                })}
+                isInvalid={!!errors.name}
+                errorMessage={errors.name?.message}
+              />
+              <Input
+                label="Email"
+                type="email"
+                variant="bordered"
+                {...register("email", {
+                  required: "Email é obrigatório",
+                  pattern: {
+                    value: /^\S+@\S+$/i,
+                    message: "Email inválido",
+                  },
+                })}
+                isInvalid={!!errors.email}
+                errorMessage={errors.email?.message}
+              />
+              <Input
+                label="Senha"
+                type="password"
+                variant="bordered"
+                {...register("password", {
+                  required: "Senha é obrigatória",
+                  minLength: {
+                    value: 6,
+                    message: "Senha deve ter pelo menos 6 caracteres",
+                  },
+                })}
+                isInvalid={!!errors.password}
+                errorMessage={errors.password?.message}
+              />
+              <Input
+                label="Confirmar Senha"
+                type="password"
+                variant="bordered"
+                {...register("confirmPassword", {
+                  required: "Confirmação de senha é obrigatória",
+                  validate: (value) =>
+                    value === password || "As senhas não coincidem",
+                })}
+                isInvalid={!!errors.confirmPassword}
+                errorMessage={errors.confirmPassword?.message}
+              />
+            </div>
+
+            <Button
+              type="submit"
+              className="w-full"
+              color="primary"
+              isLoading={isSubmitting}
+              disabled={isSubmitting}
+            >
+              {isSubmitting ? "Cadastrando..." : "Cadastrar"}
+            </Button>
+          </form>
+        </CardBody>
+        <CardFooter className="justify-center">
+          <Link href="/login" className="text-blue-500 hover:underline">
             Já tem conta? Faça login
-          </a>
-        </div>
-      </div>
+          </Link>
+        </CardFooter>
+      </Card>
     </div>
   );
 }

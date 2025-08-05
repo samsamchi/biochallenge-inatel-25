@@ -8,24 +8,28 @@ datasource db {
 }
 
 model User {
-  id            String    @id @default(uuid())
+  id            String     @id @default(uuid())
   name          String
-  email         String    @unique
+  email         String     @unique
   password      String
   emailVerified DateTime?
-  createdAt     DateTime  @default(now())
-  updatedAt     DateTime  @updatedAt
+  createdAt     DateTime   @default(now())
+  updatedAt     DateTime   @updatedAt
   medicines     Medicine[]
 }
 
 model Medicine {
-  id          String   @id @default(uuid())
-  name        String
-  dosage      String
-  time        DateTime
-  description String?
-  userId      String
-  user        User     @relation(fields: [userId], references: [id])
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+  id               String    @id @default(uuid())
+  name             String
+  dosage           String
+  unit             String
+  frequency        String
+  start            DateTime
+  end              DateTime?
+  description      String?
+  userId           String
+  lastAdministered DateTime?
+  user             User      @relation(fields: [userId], references: [id])
+  createdAt        DateTime  @default(now())
+  updatedAt        DateTime  @updatedAt
 }
