@@ -119,7 +119,7 @@ export default function MedicineList({ refreshTrigger }: MedicineListProps) {
                   <TableCell>{medicine.dosage}</TableCell>
                   <TableCell>--</TableCell>
                   <TableCell>
-                    {medicine.end ? formatDateTime(medicine.end) : "N/A"}
+                    {medicine.end ? formatDateTime(medicine.end) : "Nunca"}
                   </TableCell>
                 </TableRow>
               ))}
