@@ -1,5 +1,5 @@
 "use client";
-import logo from "@/assets/images/blue.svg";
+import logo from "@/assets/images/outlined.svg";
 import { Eye, EyeOff } from "@geist-ui/icons";
 import { Button } from "@heroui/button";
 import { Card, CardBody, CardFooter, CardHeader } from "@heroui/card";
@@ -54,17 +54,15 @@ export default function LoginPage() {
     <div className="min-h-screen flex items-center justify-center login-bg">
       <div className="flex flex-col items-center mb-18 my-10 mr-25"></div>
       <Card className="w-[360px] gap-2">
-        <CardHeader className="text-gray-700 pt-8 flex-col justify-center items-center gap-4">
-          <div className="flex flex-row items-center gap-2">
-            <Image
-              src={logo}
-              className="translate-x-0.25"
-              alt="Controle de Medicamentos"
-              width={48}
-              height={48}
-            />
-          </div>
-          <h1 className="text-xl font-bold text-center">Entrar</h1>
+        <CardHeader className="text-gray-700 pt-10 pb-6 flex-col justify-center items-center gap-4">
+          <Image
+            src={logo}
+            className="translate-x-0.25"
+            alt="Controle de Medicamentos"
+            width={52}
+            height={52}
+          />
+          <h1 className="text-2xl font-bold text-center">Entrar</h1>
         </CardHeader>
         <CardBody className="px-6">
           <form
@@ -121,11 +119,11 @@ export default function LoginPage() {
               isLoading={isSubmitting}
               disabled={isSubmitting}
             >
-              {isSubmitting ? "Entrando..." : "Entrar"}
+                Entrar
             </Button>
           </form>
         </CardBody>
-        <CardFooter className="justify-center">
+        <CardFooter className="justify-center pb-6">
           <div className="flex justify-between">
             <a href="/cadastro" className="text-blue-500 hover:underline">
               Criar conta

@@ -4,14 +4,16 @@ import MedicineList from "@/components/MedicineList";
 import { useState } from "react";
 
 export default function DashboardPage() {
-  const [refreshList, setRefreshList] = useState(false);
+  const [refetchTrigger, setRefetchTrigger] = useState(false);
+
+  const triggerRefetch = () => {
+    setRefetchTrigger((prev) => !prev);
+  };
 
   return (
     <main className="flex flex-col items-center justify-center gap-8">
-      <AddMedicineForm
-        onMedicineAdded={() => setRefreshList((prev) => !prev)}
-      />
-      <MedicineList refreshTrigger={refreshList} />
+      <AddMedicineForm onFinished={triggerRefetch} />
+      <MedicineList refetchTrigger={refetchTrigger} />
     </main>
   );
 }

@@ -1,12 +1,11 @@
 "use client";
 
-import logo from "@/assets/images/blue.svg";
+import logo from "@/assets/images/outlined.svg";
 import AuthGuard from "@/components/AuthGuard";
-import { LogOut } from "@geist-ui/icons";
 import { Button } from "@heroui/react";
+import { LogOut } from "lucide-react";
 import { signOut } from "next-auth/react";
 import Image from "next/image";
-
 interface AuthLayoutProps {
   children: React.ReactNode;
 }

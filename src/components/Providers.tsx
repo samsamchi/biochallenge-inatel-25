@@ -1,4 +1,5 @@
 "use client";
+import { ApiProvider } from "@/contexts/apiContext";
 import { HeroUIProvider } from "@heroui/react";
 import { ToastProvider } from "@heroui/toast";
 import { SessionProvider } from "next-auth/react";
@@ -10,10 +11,12 @@ type Props = {
 const Providers = ({ children }: Props) => {
   return (
     <SessionProvider>
-      <HeroUIProvider>
-        <ToastProvider />
-        {children}
-      </HeroUIProvider>
+      <ApiProvider>
+        <HeroUIProvider>
+          <ToastProvider />
+          {children}
+        </HeroUIProvider>
+      </ApiProvider>
     </SessionProvider>
   );
 };

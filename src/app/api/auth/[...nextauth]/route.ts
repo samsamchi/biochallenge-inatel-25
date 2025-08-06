@@ -3,6 +3,7 @@ import NextAuth, { NextAuthOptions, SessionStrategy } from "next-auth";
 import { PrismaClient } from "@prisma/client";
 import { compare } from "bcryptjs";
 import CredentialsProvider from "next-auth/providers/credentials";
+import { cookies } from "next/headers";
 
 const prisma = new PrismaClient();
 
@@ -59,6 +60,11 @@ export const authOptions: NextAuthOptions = {
       if (token) {
         session.user.id = token.id as string;
       }
+      (await cookies()).set({
+        name: "next-auth.session",
+        value: JSON.stringify(session),
+        path: "/",
+      });
       return session;
     },
   },
