@@ -1,5 +1,5 @@
 "use client";
-import AddMedicineForm from "@/components/AddMedicineForm";
+import AddMedicineForm from "@/components/MedicineAccordion";
 import MedicineList from "@/components/MedicineList";
 
 export default function DashboardPage() {
