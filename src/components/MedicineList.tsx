@@ -1,8 +1,9 @@
 "use client";
-import { debounce } from "@/app/services/debouncer";
-import { formatDate, hashOptions } from "@/app/services/formatters";
-import { frequencies } from "@/app/services/units";
 import { useAPI } from "@/hooks/useAPI";
+import { debounce } from "@/services/debouncer";
+import { formatDate, hashOptions } from "@/services/formatters";
+import { qc } from "@/services/queryClient";
+import { frequencies } from "@/services/units";
 import { Medicine } from "@/types";
 import {
   addToast,
@@ -19,22 +20,17 @@ import {
   TableRow,
   Tooltip,
 } from "@heroui/react";
+import { useMutation, useQuery } from "@tanstack/react-query";
 import { ClipboardList, Edit, Search, Trash } from "lucide-react";
 import { useSession } from "next-auth/react";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import ConfirmDialog from "./ConfirmDialog";
 import MedicineModal from "./MedicineModal";
 
-export default function MedicineList({
-  refetchTrigger,
-}: {
-  refetchTrigger?: boolean;
-}) {
+export default function MedicineList() {
   const { data: session } = useSession();
   const [inputValue, setInputValue] = useState("");
-  const [medicines, setMedicines] = useState<Medicine[]>([]);
   const [filteredMedicines, setFilteredMedicines] = useState<Medicine[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
   const api = useAPI();
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedMedicine, setSelectedMedicine] = useState<Medicine>();
@@ -50,53 +46,45 @@ export default function MedicineList({
     setIsModalOpen(true);
   };
 
-  const fetchMedicines = useCallback(async () => {
-    try {
-      setIsLoading(true);
-      if (!session?.user?.email) {
-        setIsLoading(false);
-        return;
-      }
-      const response = await api.get<Medicine[]>("/api/medicines");
-      setMedicines(response);
-      setFilteredMedicines(response);
-    } catch {
-      addToast({
-        title: "Erro",
-        description: "Falha ao carregar medicamentos",
-        color: "danger",
-      });
-    } finally {
-      setIsLoading(false);
-    }
-  }, [session, api]);
+  const fetchMedicines = async () => {
+    if (!session?.user?.email) return [];
+    return api.get<Medicine[]>("/api/medicines");
+  };
+
+  const { data: medicines = [], isLoading } = useQuery({
+    queryKey: ["medicines"],
+    queryFn: fetchMedicines,
+  });
 
   useEffect(() => {
-    fetchMedicines();
-  }, [fetchMedicines]);
+    setFilteredMedicines(medicines);
+  }, [medicines]);
 
-  const deleteMedicine = async (medicineId: string) => {
-    try {
-      await api.delete(`/api/medicines/${medicineId}`);
-      fetchMedicines();
+  const { mutate: deleteMedicine } = useMutation({
+    mutationFn: async (medicineId: string) => {
+      return api.delete(`/api/medicines/${medicineId}`);
+    },
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: ["medicines"] });
       addToast({
         title: "Sucesso",
         description: "Medicamento excluído com sucesso.",
         color: "success",
       });
-    } catch {
+    },
+    onError: () => {
       addToast({
         title: "Erro",
         description: "Falha ao excluir medicamento.",
         color: "danger",
       });
-    }
-  };
+    },
+  });
 
   const onModalClose = () => {
     setSelectedMedicine(undefined);
     setIsModalOpen(false);
-    fetchMedicines();
+    qc.invalidateQueries({ queryKey: ["medicines"] });
   };
 
   const onSearch = useCallback(
@@ -105,11 +93,9 @@ export default function MedicineList({
         setFilteredMedicines(medicines);
         return;
       }
-
       const filtered = medicines.filter((medicine) =>
         medicine.name.toLowerCase().includes(term.toLowerCase()),
       );
-
       setFilteredMedicines(filtered);
     },
     [medicines],

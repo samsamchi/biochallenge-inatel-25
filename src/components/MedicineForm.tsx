@@ -1,6 +1,7 @@
-import { sanitizeDate } from "@/app/services/formatters";
-import { dosages, frequencies } from "@/app/services/units";
 import { useAPI } from "@/hooks/useAPI";
+import { sanitizeDate } from "@/services/formatters";
+import { qc } from "@/services/queryClient";
+import { dosages, frequencies } from "@/services/units";
 import { Medicine, MedicineFormData } from "@/types";
 import { Button } from "@heroui/button";
 import { Input, Textarea } from "@heroui/input";
@@ -94,8 +95,17 @@ const MedicineForm = ({
         color: "success",
       });
 
-      reset();
-      onFinished();
+      reset({
+        name: "",
+        frequency: "",
+        unit: "",
+        dosage: undefined,
+        start: undefined,
+        end: undefined,
+        description: "",
+      });
+
+      qc.invalidateQueries({ queryKey: ["medicines"] });
     } catch (err) {
       addToast({
         title: "Erro",

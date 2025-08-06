@@ -1,15 +1,9 @@
 "use client";
 import { Accordion, AccordionItem } from "@heroui/react";
 import { PillBottle } from "lucide-react";
-import { useRouter } from "next/navigation";
 import MedicineForm from "./MedicineForm";
 
-export default function AddMedicineForm({
-  onFinished,
-}: {
-  onFinished: () => void;
-}) {
-  const router = useRouter();
+export default function AddMedicineForm() {
   return (
     <Accordion variant="splitted" className="w-full p-0">
       <AccordionItem
@@ -21,7 +15,7 @@ export default function AddMedicineForm({
           </div>
         }
       >
-        <MedicineForm mode="create" onFinished={() => router.refresh()} />
+        <MedicineForm mode="create" />
       </AccordionItem>
     </Accordion>
   );
