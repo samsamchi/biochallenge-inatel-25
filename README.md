@@ -2,8 +2,6 @@
 
 Projeto frontend construído com Next.js (app router) que fornece uma interface para gerenciar usuários e medicamentos.
 
-![Exemplo de tela](public/medico.png)
-
 ## Visão geral
 
 Este repositório contém a aplicação frontend (Next.js + React) e a camada de persistência configurada com Prisma usando SQLite como banco local para desenvolvimento.
