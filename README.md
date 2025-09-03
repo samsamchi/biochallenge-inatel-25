@@ -92,5 +92,3 @@ Abra `http://localhost:3000` no navegador para acessar a aplicação.
 - O esquema Prisma está em `prisma/schema.prisma`. Se fizer alterações no schema, rode `npx prisma migrate dev` e `npx prisma generate`.
 
 ---
-
-Se quiser que eu acrescente instruções específicas (como seeds, testes ou deploy), me diga qual fluxo prefere e eu adiciono ao README.
