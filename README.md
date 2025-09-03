@@ -1,36 +1,98 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Sistema de Gestão de Medicamentos
 
-## Getting Started
+Projeto frontend construído com Next.js (app router) que fornece uma interface para gerenciar usuários e medicamentos.
 
-First, run the development server:
+![Exemplo de tela](public/medico.png)
+
+## Visão geral
+
+Este repositório contém a aplicação frontend (Next.js + React) e a camada de persistência configurada com Prisma usando SQLite como banco local para desenvolvimento.
+
+O foco deste README é explicar rapidamente a estrutura do front-end e como o adapter de banco (Prisma) está configurado para rodar localmente.
+
+## Tecnologias principais
+
+- Next.js (App Router)
+- React + TypeScript
+- Tailwind CSS (estilos utilitários)
+- Prisma (ORM)
+- SQLite (base de dados local para desenvolvimento)
+
+## Estrutura do front-end
+
+- `src/app/` — rotas e páginas da aplicação (App Router).
+- `src/components/` — componentes reusáveis (forms, listas, wrappers de sessão).
+- `src/app/api/` — endpoints API route handlers (server-side) que usam Prisma para acessar o banco.
+
+As páginas usam componentes controlados por `react-hook-form` para validar e enviar dados ao backend.
+
+## Banco de dados e adapter (Prisma + SQLite)
+
+O projeto usa Prisma como ORM e um arquivo SQLite (`prisma/dev.db`) para persistência durante o desenvolvimento. O adaptador é simples e local, ideal para testes e prototipagem.
+
+Principais arquivos relacionados:
+- `prisma/schema.prisma` — esquema do banco (modelos `User` e `Medicine`).
+- `prisma/dev.db` — arquivo do banco SQLite (gerado após rodar as migrações).
+
+Fluxo recomendado para preparar o banco local:
+
+1. Defina a variável de ambiente `DATABASE_URL` no arquivo `.env` na raiz do projeto:
+
+```text
+DATABASE_URL="file:./prisma/dev.db"
+```
+
+2. Gere o cliente Prisma (após alterar o schema ou ao clonar o repositório):
+
+```bash
+npx prisma generate
+```
+
+3. Rode as migrações (desenvolvimento):
+
+```bash
+npx prisma migrate dev --name init
+```
+
+Após isso o arquivo `prisma/dev.db` será criado/atualizado e o Prisma Client ficará disponível em `node_modules/@prisma/client`.
+
+## Como executar localmente
+
+1. Clone o repositório e entre na pasta do projeto.
+
+```bash
+git clone <repo-url>
+cd bioic
+```
+
+2. Instale as dependências:
+
+```bash
+npm install
+```
+
+3. Configure a variável de ambiente (`.env`) conforme explicado acima.
+
+4. Gere o Prisma Client e aplique migrações (se necessário):
+
+```bash
+npx prisma generate
+npx prisma migrate dev
+```
+
+5. Inicie o servidor de desenvolvimento:
 
 ```bash
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Abra `http://localhost:3000` no navegador para acessar a aplicação.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Notas rápidas
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+- Em produção você deve trocar o `DATABASE_URL` para um banco gerenciado (Postgres, MySQL, etc.) e executar as migrações no ambiente adequado.
+- O esquema Prisma está em `prisma/schema.prisma`. Se fizer alterações no schema, rode `npx prisma migrate dev` e `npx prisma generate`.
 
-## Learn More
+---
 
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+Se quiser que eu acrescente instruções específicas (como seeds, testes ou deploy), me diga qual fluxo prefere e eu adiciono ao README.
