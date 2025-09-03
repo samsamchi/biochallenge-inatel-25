@@ -2,9 +2,6 @@
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { hash } from "bcryptjs";
-import { PrismaClient } from "@prisma/client";
-
-const prisma = new PrismaClient();
 
 export default function CadastroPage() {
   const [name, setName] = useState("");
